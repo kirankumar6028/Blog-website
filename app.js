@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+require('dotenv').config()
 
 const homeStartingContent = "This is the Blog website,here you can post your blogs.";
 const aboutContent = "This website made by the team of web developers.who works as the freelancer.If you want this type of websites feel free to contact us.contact details will be on contact page.Thank you";
@@ -16,15 +17,22 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/blogDB", {useNewUrlParser: true ,  useUnifiedTopology: true});
+mongoose.connect(process.env.URI, {useNewUrlParser: true ,  useUnifiedTopology: true})
+  .then((result) => console.log("connected to db"))
+  .catch((err) => console.log(err));
 
 
 
 
 const postSchema = {
-  title : "String",
-  content : "String"
-
+  title : {
+    type : "String",
+    required : true
+  },
+  content : {
+    type : "String",
+    required : true
+  }
 };
 
 const Post = mongoose.model("Post", postSchema);
